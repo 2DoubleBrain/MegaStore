@@ -69,6 +69,18 @@ function saveUserInfo(phoneNumber = null) {
     }
 }
 
+// ============ ОПРЕДЕЛЕНИЕ РЕПОЗИТОРИЯ ДЛЯ АДМИНКИ ============
+function getRepoInfo() {
+    const hostname = window.location.hostname;
+    if (hostname.includes('github.io')) {
+        const username = hostname.split('.')[0];
+        const pathParts = window.location.pathname.split('/');
+        const reponame = pathParts[1] || '';
+        return { username, reponame };
+    }
+    return null;
+}
+
 // ============ ЗАГРУЗКА ДАННЫХ ============
 async function loadData() {
     try {
