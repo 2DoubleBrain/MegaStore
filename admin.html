@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>MegaStore - Админ панель</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 12px;
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .card h2 {
+            margin-bottom: 15px;
+            color: #1a3a8c;
+            font-size: 18px;
+            border-left: 4px solid #FF8C00;
+            padding-left: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 14px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 12px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            font-size: 16px;
+            background: white;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF8C00;
+            box-shadow: 0 0 0 2px rgba(255,140,0,0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.05s;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-primary {
+            background: #1a3a8c;
+            color: #FF8C00;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+        
+        .btn-block {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        .products-table th,
+        .products-table td {
+            padding: 10px 6px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .products-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .product-photo {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 10px 6px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: #1a3a8c;
+            color: #FF8C00;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .specs-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .specs-row label {
+            width: 80px;
+            font-size: 12px;
+        }
+        
+        .specs-row input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .price-row label {
+            width: 140px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .price-row input {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        .memory-option {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .memory-option .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .memory-option .row label {
+            width: 60px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .memory-option .row input {
+            width: 100px;
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .memory-option button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .add-memory {
+            background: #1a3a8c;
+            color: #FF8C00;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .search-box {
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 40px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+        }
+        
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 500px;
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h3 {
+            font-size: 18px;
+            color: #1a3a8c;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #888;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .button-group .btn {
+            flex: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .products-table {
+                font-size: 11px;
+            }
+            .price-row label {
+                width: 110px;
+                font-size: 11px;
+            }
+            .price-row input {
+                width: 90px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Вход -->
+    <div id="loginCard" class="card">
+        <h2>🔐 Вход в админ-панель</h2>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="adminPassword" placeholder="Введите пароль">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="checkLogin()">Войти</button>
+    </div>
+    
+    <!-- Админ панель -->
+    <div id="adminPanel" style="display: none;">
+        <div class="card">
+            <h2>🛍️ MegaStore - Управление магазином</h2>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="products">📋 Товары</button>
+                <button class="tab-btn" data-tab="add">➕ Добавить</button>
+                <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
+            </div>
+            
+            <!-- Товары -->
+            <div id="tabProducts" class="tab-pane active">
+                <div class="search-box">
+                    <input type="text" id="searchProduct" placeholder="🔍 Поиск товаров..." onkeyup="filterProducts()">
+                </div>
+                <div id="productsList"></div>
+            </div>
+            
+            <!-- Добавить товар -->
+            <div id="tabAdd" class="tab-pane">
+                <form id="productForm">
+                    <div class="form-group">
+                        <label>Название товара *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea id="productDesc" rows="3" placeholder="Характеристики..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Категория</label>
+                            <select id="productCategory"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Акция</label>
+                            <select id="productSale">
+                                <option value="false">Нет</option>
+                                <option value="true">🔥 Акция</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Фото (ссылка)</label>
+                        <input type="text" id="productPhoto" placeholder="https://...">
+                        <small style="color:#888;">Загрузите фото на постхостинг и вставьте ссылку</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Характеристики (Дисплей, процессор и т.д.)</label>
+                        <div id="specsContainer">
+                            <div class="specs-row">
+                                <label>Дисплей:</label>
+                                <input type="text" id="specDisplay" placeholder="6.7 дюймов">
+                            </div>
+                            <div class="specs-row">
+                                <label>Процессор:</label>
+                                <input type="text" id="specCpu" placeholder="Apple A16">
+                            </div>
+                            <div class="specs-row">
+                                <label>Аккумулятор:</label>
+                                <input type="text" id="specBattery" placeholder="3349 мАч">
+                            </div>
+                            <div class="specs-row">
+                                <label>SIM:</label>
+                                <input type="text" id="specSim" placeholder="2 SIM">
+                            </div>
+                            <div class="specs-row">
+                                <label>Камера:</label>
+                                <input type="text" id="specCamera" placeholder="48/12 МП">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Цены (для разных объемов памяти)</label>
+                        <div id="memoryPricesContainer"></div>
+                        <button type="button" class="add-memory" onclick="addMemoryOption()">➕ Добавить объем памяти</button>
+                        <small style="color:#888; display: block; margin-top: 5px;">Пример: 128, 256, 512</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Цена по умолчанию (если нет вариантов памяти)</label>
+                        <input type="number" id="defaultPriceRetail" placeholder="Розничная цена">
+                        <input type="number" id="defaultPriceOpt" placeholder="Оптовая цена" style="margin-top: 5px;">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-block">💾 Сохранить товар</button>
+                </form>
+            </div>
+            
+            <!-- Настройки -->
+            <div id="tabSettings" class="tab-pane">
+                <div class="form-group">
+                    <label>🔑 GitHub токен (для сохранения)</label>
+                    <input type="password" id="githubToken" placeholder="ghp_...">
+                    <button class="btn btn-primary btn-sm" onclick="saveGithubToken()" style="margin-top: 8px;">💾 Сохранить токен</button>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label>📞 Телефон магазина</label>
+                    <input type="text" id="shopPhone" placeholder="+7 (999) 123-45-67">
+                </div>
+                <div class="form-group">
+                    <label>🆔 Telegram ID менеджера</label>
+                    <input type="text" id="managerId" placeholder="1840842662">
+                </div>
+                <div class="form-group">
+                    <label>🤖 Bot Token</label>
+                    <input type="text" id="botToken" placeholder="8632582190:AAFw8WqCXVPZ9pF-Mc2_rEFHBHVbxMq_UKI">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="saveSettings()">💾 Сохранить настройки</button>
+                <hr>
+                <button class="btn btn-success btn-block" onclick="saveToGitHub()">💾 Сохранить на сервер</button>
+                <button class="btn btn-warning btn-block" onclick="exportAllData()" style="margin-top: 10px;">📤 Экспортировать data.json</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============ ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ============
+    let products = [];
+    let categories = [
+        "iPhone", "Samsung", "MacBook", "AirPods", "iPad", "PS5", "XBOX", 
+        "Nintendo", "Геймпады", "Apple Watch", "Huawei", "Xiaomi", "Honor", 
+        "Realme", "Tecno", "PS5 Accessories", "Steam Deck"
+    ];
+    let shopConfig = { contactPhone: "", managerTgId: "", botToken: "" };
+    let editingProductId = null;
+    let memoryOptions = [];
+    let githubConfig = { repo: "", token: null };
+    
+    // ============ ВСПОМОГАТЕЛЬНЫЕ ============
+    function getRepoInfo() {
+        const hostname = window.location.hostname;
+        if (hostname.includes('github.io')) {
+            const username = hostname.split('.')[0];
+            const pathParts = window.location.pathname.split('/');
+            const reponame = pathParts[1] || '';
+            return { username, reponame };
+        }
+        return null;
+    }
+    
+    // ============ УПРАВЛЕНИЕ ОБЪЕМАМИ ПАМЯТИ ============
+    function addMemoryOption(size = '', retail = '', opt = '') {
+        const container = document.getElementById('memoryPricesContainer');
+        const idx = memoryOptions.length;
+        memoryOptions.push({ size: size, retail: retail, opt: opt });
+        
+        const div = document.createElement('div');
+        div.className = 'memory-option';
+        div.id = `memory_${idx}`;
+        div.innerHTML = `
+            <div class="row">
+                <label>Объем (ГБ):</label>
+                <input type="number" class="memory-size" value="${size}" placeholder="128" style="width:80px">
+                <label>Розница:</label>
+                <input type="number" class="memory-retail" value="${retail}" placeholder="Цена" style="width:100px">
+                <label>Опт:</label>
+                <input type="number" class="memory-opt" value="${opt}" placeholder="Цена" style="width:100px">
+                <button onclick="removeMemoryOption(${idx})">🗑️</button>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+    
+    function removeMemoryOption(idx) {
+        memoryOptions.splice(idx, 1);
+        renderMemoryOptions();
+    }
+    
+    function renderMemoryOptions() {
+        const container = document.getElementById('memoryPricesContainer');
+        container.innerHTML = '';
+        memoryOptions.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'memory-option';
+            div.innerHTML = `
+                <div class="row">
+                    <label>Объем (ГБ):</label>
+                    <input type="number" class="memory-size" value="${opt.size}" placeholder="128" style="width:80px" onchange="updateMemoryOption(${i}, 'size', this.value)">
+                    <label>Розница:</label>
+                    <input type="number" class="memory-retail" value="${opt.retail}" placeholder="Цена" style="width:100px" onchange="updateMemoryOption(${i}, 'retail', this.value)">
+                    <label>Опт:</label>
+                    <input type="number" class="memory-opt" value="${opt.opt}" placeholder="Цена" style="width:100px" onchange="updateMemoryOption(${i}, 'opt', this.value)">
+                    <button onclick="removeMemoryOption(${i})">🗑️</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+    
+    function updateMemoryOption(idx, field, value) {
+        memoryOptions[idx][field] = value;
+    }
+    
+    function clearMemoryOptions() {
+        memoryOptions = [];
+        renderMemoryOptions();
+    }
+    
+    // ============ ВХОД ============
+    function checkLogin() {
+        const password = document.getElementById('adminPassword').value;
+        if (password === 'Amigo2025') {
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadData();
+            setupTabs();
+        } else {
+            alert('❌ Неверный пароль!');
+        }
+    }
+    
+    // ============ ЗАГРУЗКА ДАННЫХ ============
+    async function loadData() {
+        try {
+            const response = await fetch('./data.json?' + Date.now());
+            if (response.ok) {
+                const data = await response.json();
+                products = data.products || [];
+                if (data.categories && data.categories.length) categories = data.categories;
+                shopConfig = {
+                    contactPhone: data.contactPhone || '+7 (999) 123-45-67',
+                    managerTgId: data.managerTgId || '1840842662',
+                    botToken: data.botToken || ''
+                };
+            }
+        } catch(e) { console.log('Новый файл data.json'); }
+        
+        const savedToken = localStorage.getItem('megastore_github_token');
+        if (savedToken) {
+            githubConfig.token = savedToken;
+            document.getElementById('githubToken').value = savedToken;
+        }
+        const repoInfo = getRepoInfo();
+        if (repoInfo && repoInfo.reponame) githubConfig.repo = `${repoInfo.username}/${repoInfo.reponame}`;
+        
+        document.getElementById('shopPhone').value = shopConfig.contactPhone;
+        document.getElementById('managerId').value = shopConfig.managerTgId;
+        document.getElementById('botToken').value = shopConfig.botToken;
+        
+        updateCategorySelect();
+        renderProductsList();
+    }
+    
+    function updateCategorySelect() {
+        const select = document.getElementById('productCategory');
+        if (select) select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+    
+    // ============ ОТОБРАЖЕНИЕ ТОВАРОВ ============
+    function renderProductsList() {
+        const searchTerm = document.getElementById('searchProduct')?.value.toLowerCase() || '';
+        let filtered = products;
+        if (searchTerm) filtered = products.filter(p => p.name.toLowerCase().includes(searchTerm));
+        
+        const container = document.getElementById('productsList');
+        if (!filtered.length) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;">📦 Нет товаров</div>';
+            return;
+        }
+        
+        let html = `<div style="overflow-x: auto;"><table class="products-table">
+            <thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th></th></tr></thead>
+            <tbody>`;
+        filtered.forEach(p => {
+            let priceDisplay = '';
+            if (p.defaultPrice_retail) {
+                priceDisplay = `от ${p.defaultPrice_retail}₽`;
+            } else if (p.price128_retail) {
+                priceDisplay = `128ГБ от ${p.price128_retail}₽`;
+            } else {
+                priceDisplay = `${p.price}₽`;
+            }
+            html += `<tr>
+                <td><img src="${p.photo || 'https://placehold.co/50x50/eee/ccc?text=No'}" class="product-photo" onerror="this.src='https://placehold.co/50x50/eee/ccc?text=No'"></td>
+                <td><strong>${escapeHtml(p.name)}</strong><br><small>${(p.description || '').substring(0, 40)}</small></td>
+                <td>${p.category || '-'}</td>
+                <td>${priceDisplay}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editProduct(${p.id})" style="margin:2px;">✏️</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})" style="margin:2px;">🗑️</button>
+                </td>
+            <tr>`;
+        });
+        html += `</tbody></table></div>`;
+        container.innerHTML = html;
+    }
+    
+    function filterProducts() { renderProductsList(); }
+    
+    function clearProductForm() {
+        document.getElementById('productName').value = '';
+        document.getElementById('productDesc').value = '';
+        document.getElementById('productPhoto').value = '';
+        document.getElementById('productCategory').value = categories[0] || 'iPhone';
+        document.getElementById('productSale').value = 'false';
+        document.getElementById('specDisplay').value = '';
+        document.getElementById('specCpu').value = '';
+        document.getElementById('specBattery').value = '';
+        document.getElementById('specSim').value = '';
+        document.getElementById('specCamera').value = '';
+        document.getElementById('defaultPriceRetail').value = '';
+        document.getElementById('defaultPriceOpt').value = '';
+        clearMemoryOptions();
+        editingProductId = null;
+    }
+    
+    // ============ СОХРАНЕНИЕ ТОВАРА ============
+    document.getElementById('productForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        
+        // Собираем цены по памяти
+        const priceRanges = {};
+        memoryOptions.forEach(opt => {
+            if (opt.size && (opt.retail || opt.opt)) {
+                priceRanges[`price${opt.size}_retail`] = parseInt(opt.retail) || null;
+                priceRanges[`price${opt.size}_opt`] = parseInt(opt.opt) || null;
+            }
+        });
+        
+        // Формируем описание из характеристик
+        const display = document.getElementById('specDisplay').value;
+        const cpu = document.getElementById('specCpu').value;
+        const battery = document.getElementById('specBattery').value;
+        const sim = document.getElementById('specSim').value;
+        const camera = document.getElementById('specCamera').value;
+        const description = [display, cpu, battery, sim, camera].filter(Boolean).join('\n');
+        
+        const newProduct = {
+            id: newId,
+            name: document.getElementById('productName').value,
+            description: description || document.getElementById('productDesc').value,
+            category: document.getElementById('productCategory').value,
+            ...priceRanges,
+            price128_retail: priceRanges.price128_retail || null,
+            price128_opt: priceRanges.price128_opt || null,
+            price256_retail: priceRanges.price256_retail || null,
+            price256_opt: priceRanges.price256_opt || null,
+            price512_retail: priceRanges.price512_retail || null,
+            price512_opt: priceRanges.price512_opt || null,
+            price1024_retail: priceRanges.price1024_retail || null,
+            price1024_opt: priceRanges.price1024_opt || null,
+            defaultPrice_retail: parseInt(document.getElementById('defaultPriceRetail').value) || null,
+            defaultPrice_opt: parseInt(document.getElementById('defaultPriceOpt').value) || null,
+            sale: document.getElementById('productSale').value === 'true',
+            photo: document.getElementById('productPhoto').value || '',
+            popular: false
+        };
+        
+        products.push(newProduct);
+        clearProductForm();
+        renderProductsList();
+        alert(`✅ Товар "${newProduct.name}" сохранен!`);
+    });
+    
+    // ============ РЕДАКТИРОВАНИЕ ТОВАРА ============
+    function editProduct(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        
+        const index = products.findIndex(p => p.id === id);
+        if (index !== -1) products.splice(index, 1);
+        
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productDesc').value = product.description || '';
+        document.getElementById('productCategory').value = product.category || categories[0];
+        document.getElementById('productPhoto').value = product.photo || '';
+        document.getElementById('productSale').value = product.sale ? 'true' : 'false';
+        document.getElementById('defaultPriceRetail').value = product.defaultPrice_retail || '';
+        document.getElementById('defaultPriceOpt').value = product.defaultPrice_opt || '';
+        
+        // Заполняем характеристики из description
+        const descLines = (product.description || '').split('\n');
+        document.getElementById('specDisplay').value = descLines.find(l => l.includes('Дисплей'))?.replace('Дисплей:', '').trim() || '';
+        document.getElementById('specCpu').value = descLines.find(l => l.includes('Процессор'))?.replace('Процессор:', '').trim() || '';
+        document.getElementById('specBattery').value = descLines.find(l => l.includes('Аккумулятор'))?.replace('Аккумулятор:', '').trim() || '';
+        document.getElementById('specSim').value = descLines.find(l => l.includes('Sim'))?.replace('Sim:', '').trim() || '';
+        document.getElementById('specCamera').value = descLines.find(l => l.includes('Камера'))?.replace('Камера:', '').trim() || '';
+        
+        // Заполняем цены памяти
+        clearMemoryOptions();
+        const memorySizes = ['128', '256', '512', '1024'];
+        memorySizes.forEach(size => {
+            const retail = product[`price${size}_retail`];
+            const opt = product[`price${size}_opt`];
+            if (retail || opt) {
+                addMemoryOption(size, retail || '', opt || '');
+            }
+        });
+        
+        // Переключаемся на вкладку "Добавить товар"
+        switchToAddTab();
+        
+        alert(`✏️ Редактирование: "${product.name}". После изменений нажмите "Сохранить товар"`);
+    }
+    
+    function switchToAddTab() {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+        const addTabBtn = document.querySelector('.tab-btn[data-tab="add"]');
+        if (addTabBtn) addTabBtn.classList.add('active');
+        document.getElementById('tabAdd').classList.add('active');
+        document.getElementById('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // ============ УДАЛЕНИЕ ТОВАРА ============
+    function deleteProduct(id) {
+        const product = products.find(p => p.id === id);
+        if (confirm(`Удалить товар "${product?.name}"?`)) {
+            const idx = products.findIndex(p => p.id === id);
+            if (idx !== -1) products.splice(idx, 1);
+            renderProductsList();
+            alert('✅ Товар удален');
+        }
+    }
+    
+    // ============ СОХРАНЕНИЕ НА GITHUB ============
+    async function saveToGitHub() {
+        const token = document.getElementById('githubToken').value;
+        if (!token || !token.startsWith('ghp_')) {
+            alert('❌ Введите корректный токен (начинается с ghp_)');
+            return;
+        }
+        if (!githubConfig.repo) {
+            alert('❌ Не удалось определить репозиторий');
+            return;
+        }
+        
+        localStorage.setItem('megastore_github_token', token);
+        
+        const data = {
+            shopName: 'MegaStore',
+            contactPhone: document.getElementById('shopPhone').value,
+            managerTgId: document.getElementById('managerId').value,
+            botToken: document.getElementById('botToken').value,
+            categories: categories,
+            products: products
+        };
+        
+        const url = `https://api.github.com/repos/${githubConfig.repo}/contents/data.json`;
+        
+        try {
+            const getRes = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+            });
+            let sha = null;
+            if (getRes.ok) {
+                const fd = await getRes.json();
+                sha = fd.sha;
+            }
+            
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Обновление данных от ${new Date().toLocaleString('ru-RU')}`,
+                    content: content,
+                    sha: sha
+                })
+            });
+            
+            if (putRes.ok) {
+                alert('✅ Данные успешно сохранены! Через 2 минуты изменения появятся');
+            } else {
+                const error = await putRes.json();
+                alert(`❌ Ошибка: ${error.message}`);
+            }
+        } catch(e) {
+            console.error(e);
+            alert('⚠️ Ошибка соединения');
+        }
+    }
+    
+    // ============ ЭКСПОРТ ============
+    function exportAllData() {
+        const data = {
+            shopName: 'MegaStore',
+            contactPhone: document.getElementById('shopPhone').value,
+            managerTgId: document.getElementById('managerId').value,
+            botToken: document.getElementById('botToken').value,
+            categories: categories,
+            products: products
+        };
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        alert('✅ Файл data.json скачан! Загрузите его в репозиторий.');
+    }
+    
+    // ============ НАСТРОЙКИ ============
+    function saveGithubToken() {
+        const token = document.getElementById('githubToken').value;
+        if (token && token.startsWith('ghp_')) {
+            localStorage.setItem('megastore_github_token', token);
+            githubConfig.token = token;
+            alert('✅ Токен сохранен!');
+        } else {
+            alert('❌ Неверный формат токена. Токен должен начинаться с "ghp_"');
+        }
+    }
+    
+    function saveSettings() {
+        alert('✅ Настройки сохранены локально! Нажмите "Сохранить на сервер" для применения.');
+    }
+    
+    // ============ ВКЛАДКИ ============
+    function setupTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                if (tab === 'products') document.getElementById('tabProducts').classList.add('active');
+                if (tab === 'add') document.getElementById('tabAdd').classList.add('active');
+                if (tab === 'settings') document.getElementById('tabSettings').classList.add('active');
+            });
+        });
+    }
+    
+    function escapeHtml(text) {
+        if (!text)
